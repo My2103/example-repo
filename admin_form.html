@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group button {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>University Subject Registration</h2>
+        <form id="registrationForm">
+            <!-- Term Dropdown -->
+            <div class="form-group">
+                <label for="term">Select Term:</label>
+                <select id="term" name="term" required>
+                    <option value="">--Choose Term--</option>
+                    <option value="Spring1">Spring 1</option>
+                    <option value="Spring2">Spring 2</option>
+                    <option value="Summer1">Summer 1</option>
+                    <option value="Summer2">Summer 2</option>
+                    <option value="Fall1">Fall 1</option>
+                    <option value="Fall2">Fall 2</option>
+                </select>
+            </div>
+
+            <!-- Courses Checkboxes -->
+            <div class="form-group">
+                <label>Select Courses:</label>
+                <div class="checkbox-group">
+                    <p><label><input type="checkbox" name="courses" value="Math"> Math</label></p>
+                    <p><label><input type="checkbox" name="courses" value="Physics"> Physics</label></p>
+                    <p><label><input type="checkbox" name="courses" value="Chemistry"> Chemistry</label></p>
+                    <p><label><input type="checkbox" name="courses" value="Biology"> Biology</label></p>
+                </div>
+            </div>
+
+            <!-- Registration Start and End Times -->
+            <div class="form-group">
+                <label for="startTime">Start Date and Time:</label>
+                <input type="datetime-local" id="startTime" name="startTime" required>
+            </div>
+            <div class="form-group">
+                <label for="endTime">End Date and Time:</label>
+                <input type="datetime-local" id="endTime" name="endTime" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit">Submit Registration</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission to server for now
+            const formData = new FormData(this);
+            const selectedTerm = formData.get('term');
+            const selectedCourses = formData.getAll('courses');
+            const registerTime = formData.get('registerTime');
+
+            console.log('Term:', selectedTerm);
+            console.log('Courses:', selectedCourses);
+            console.log('Register Time:', registerTime);
+
+            alert('Form submitted successfully!');
+        });
+    </script>
+</body>
+</html>
+
+<!--
+<form id="registrationForm" action="https://your-server-url.com/submit" method="POST">
+    Form fields remain the same //Comment
+</form>-->

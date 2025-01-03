@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <script>
+        function Submit() {
+
+            // Get the form element
+            const form = document.querySelector('form');
+
+            // Prevent the default form submission behavior
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                // Display the success message
+                const successMessage = document.createElement('p');
+                successMessage.textContent = 'Welcome back!';
+                successMessage.style.textAlign = 'center';
+                successMessage.style.fontSize = '18px';
+                successMessage.style.color = 'green';
+                document.body.appendChild(successMessage);
+            });
+
+            // Redirect to another page upon form submission
+            window.location.href = "form2_register.html";
+        }
+             
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+           
+        }
+        h3 {
+            text-align: center;
+            color: #555;
+            margin-top: 10px;
+        }
+        form {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 40px;
+            width: 300px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .form_pos {
+            display: flex;
+            justify-content: center;
+            
+        }
+        label {
+            font-size: 16px;
+            color: #555;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Log in</h1>
+    <div class="form_pos">
+        <form action="">
+            <label for="email">Email</label>
+            <input type="text" id="email" placeholder="Email" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Password" required>
+            
+            <input type="submit" value="Submit" onclick="Submit()">
+        </form>
+    </div>
+    <h3>Enter information to access your account.</h3>
+</body>
+</html>
+
+

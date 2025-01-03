@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register form</title>
+    <!--<link rel="stylesheet" href="form.css">-->
+    <!--<script src="form.js"></script>-->
+    <style>
+body {
+    background-image: linear-gradient(to right, white, #83E4DD, #C4F8F6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensures the body takes full viewport height */
+    margin: 0; /* Removes default body margin */
+}
+
+form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 50%;
+    max-width: 600px; /* Optional: limits form width */
+}
+
+label[for="name"]{
+    position: relative;
+    top: -20px;
+    margin-left: 50px;
+}
+
+input[type="text"][id="name"]{
+    position: relative;
+    top: -20px;
+    margin-left: 200px;
+}
+
+label[for="gender"]{
+    position: relative;
+    top: -20px;
+    margin-left: 75px;
+}
+
+input[type="radio"][id="female"]{
+    margin-left: 20px;
+}
+
+input[type="radio"]{
+    margin-left: 200px;
+    position: relative;
+    top: -20px;
+}
+
+label[for="male"], label[for="female"] {
+    position: relative;
+    top: -20px;
+}
+
+#list_button {
+    display: flex;
+    flex-direction: column;
+    width: 70px;
+    margin-left: 230px;
+    position: relative;
+    top: -140px;
+    color: white;
+}
+
+label[for="registration_list"]{
+    margin-left: 322px;
+    position: relative;
+    top: -296px;
+}
+
+select[id="registration_list"]{
+    margin-left: 322px;
+    position: relative;
+    top: -296px;
+}
+
+input[type="submit"][value="Submit"]{
+    margin-left: 30px;
+    position: relative;
+    top: -250px;
+    width: 130px;
+    height: 40px;
+}
+
+input[type="button"][value="Registered table"]{
+    margin-left: 190px;
+    position: relative;
+    top: -250px;
+    width: 130px;
+    height: 40px;
+}
+
+.registered_button {
+    background-color: #71CF48;
+}
+
+.submit{
+    background-color: #00E5D4;
+}
+table {
+    width: 100%;
+    position: relative;
+    top: -200px;
+}
+
+.table_row{
+    background-color: #00E5D4;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+#dataTable {
+    display: none;
+}
+
+.board{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.board_content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    padding: 5px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    display: block; /* Make the button a block element */
+    margin: 20px auto; /* Auto margin for left and right */
+    }
+
+
+    </style>
+<script>
+    function addList() {
+    var subject = document.getElementById("subject_list").value;
+    var registration = document.getElementById("registration_list");
+
+    for (var i = 0; i < registration.options.length; i++) {
+        if (registration.options[i].value === subject) {
+            alert("Subject already exists in the registration list!");
+            return; 
+        }
+    }
+
+    var newOption = document.createElement("Option");
+    newOption.text = subject;
+    newOption.value = subject;
+    registration.add(newOption);
+}
+
+
+function removeList(){
+    var registration = document.getElementById("registration_list");
+    var selectedOption = registration.options[registration.selectedIndex];
+    registration.remove(selectedOption.index);
+}
+
+function addTwoList() {
+    var subject = document.getElementById("subject_list");
+    var registration = document.getElementById("registration_list");
+
+    var selectedOptions = subject.selectedOptions;
+    for (var i = 0; i < selectedOptions.length; i++) {
+        var selectedOption = selectedOptions[i];
+
+        var exists = false;
+        for (var j = 0; j < registration.options.length; j++) {
+            if (registration.options[j].value === selectedOption.value) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (exists) {
+            alert(`Subject "${selectedOption.value}" already exists in the registration list!`);
+            continue; 
+        }
+
+        var newOption = document.createElement("option");
+        newOption.text = selectedOption.text;
+        newOption.value = selectedOption.value;
+        registration.add(newOption);
+    }
+}
+
+
+function removeTwoList(){
+    var registration = document.getElementById("registration_list");
+    var selectedOptions = registration.selectedOptions;
+
+    //Create a for loop to remove to option
+    for (var i = selectedOptions.length - 1; i >= 0; i--) {
+        var selectedOption = selectedOptions[i];
+        registration.remove(selectedOption.index);
+    }
+
+}
+
+function submitData(){
+    event.preventDefault();
+
+    var studentID = document.getElementById('studentID').value;
+    var studentName = document.getElementById('name').value;
+    var DoB = document.getElementById('birthday').value;
+    var gender = "";
+
+    if(document.getElementById('male').checked){
+        gender = document.getElementById('male').value;
+    } else {
+        gender = document.getElementById('female').value;
+    }
+
+    var table = document.getElementById('dataTable');
+    table.style.display = "table";
+
+    var newRow = table.insertRow(-1);
+    var cell1 = newRow.insertCell(0);
+    var cell2 = newRow.insertCell(1);
+    var cell3 = newRow.insertCell(2);
+    var cell4 = newRow.insertCell(3);
+
+    cell1.innerHTML = studentID;
+    cell2.innerHTML = studentName;
+    cell3.innerHTML = DoB;
+    cell4.innerHTML = gender;
+}
+
+function registeredData() {
+    var studentID = document.getElementById('studentID').value;
+    var studentName = document.getElementById('name').value;
+    var DoB = document.getElementById('birthday').value;
+    var gender = "";
+
+    if(document.getElementById('male').checked){
+        gender = document.getElementById('male').value;
+    } else {
+        gender = document.getElementById('female').value;
+    }
+
+    document.getElementById('studentIDInfo').textContent = `Student ID: ${studentID}`;
+    document.getElementById('nameInfo').textContent = `Name: ${studentName}`;
+    document.getElementById('birthdayInfo').textContent = `Date of Birth: ${DoB}`;
+    document.getElementById('genderInfo').textContent = `Gender: ${gender}`;
+
+    var subjectList = document.getElementById('subjectList');
+    var select = document.getElementById('registration_list');
+
+    // Clear existing list items
+    while (subjectList.firstChild) {
+    subjectList.removeChild(subjectList.firstChild);
+    }
+
+    // Add all subjects to the list
+    for (var i = 0; i < select.options.length; i++) {
+    var option = select.options[i];
+    var li = document.createElement('li');
+    li.textContent = option.value;
+    subjectList.appendChild(li);
+    }
+
+    // Add selected subjects to the list
+    Array.from(select.selectedOptions).forEach(option => {
+    var li = document.createElement('li');
+    li.textContent = option.value;
+    subjectList.appendChild(li);
+    });
+
+    // Display the modal
+    var modal = document.getElementById('infoBoard');
+    modal.style.display = "block";
+}
+
+// Function to close the modal
+function closeBoard() {
+    var modal = document.getElementById('infoBoard');
+    modal.style.display = "none";
+ }
+
+</script>
+</head>
+<body>
+<form  id="my-form" action="">
+    <h1>Registration form</h1>
+    <div>
+    <!--Student ID-->
+    <label for="studentID">Student ID</label>
+    <br>
+    <input type="text" name="studentID" id="studentID" required>
+
+    <!--Full Name-->
+    <label for="name">Full Name</label>
+    <br>
+    <input type="text" name="name" id="name" required>
+    </div>
+
+    <div>
+    <!--Date of birth-->
+    <label for="birthday">Date of birth</label>
+    <br>
+    <input type="date" name="birthday" id="birthday" required>
+
+    <!--Gender-->
+    <label for="gender">Gender</label>
+    <br>
+    <input type="radio" name="gender" id="male" value="Male">
+    <label for="male">Male</label>
+    <input type="radio" name="gender" id="female" value="Female">
+    <label for="female">Female</label>
+    </div>
+
+    <div id="ct">
+        <!--Subject list-->
+        <label for="subject_list">Subjects list</label>
+        <br>
+        <select name="subject_list" id="subject_list" size="8" multiple required>
+            <option value="Introduction to Programming">Introduction to Programming</option>
+            <option value="A+ Comprehensive">A+ Comprehensive</option>
+            <option value="Web Authoring">Web Authoring</option>
+            <option value="Introduction to Database Design">Introduction to Database Design</option>
+            <option value="Client-Side Scripting">Client-Side Scripting</option>
+            <option value="Programming I">Programming I</option>
+            <option value="Project Management and Project+">Project Management and Project+</option>
+            <option value="Introduction to C++">Introduction to C++</option>
+            <option value="Network+">Network+</option>
+            <option value="Information System Management">Information System Management</option>
+        </select>
+    </div>
+
+    <div id="list_button">
+        <input type="button" value=">" class="registered_button" onclick="addList()">
+        <br>
+        <input type="button" value="<" class="registered_button" onclick="removeList()">
+        <br>
+        <input type="button" value=">>" class="registered_button" onclick="addTwoList()">
+        <br>
+        <input type="button" value="<<" class="registered_button" onclick="removeTwoList()">
+    </div>
+
+    <div>
+        <label for="registration_list">Registration list</label>
+        <br>
+        <select name="registration_list" id="registration_list" size="8" style="width: 200px; height: 138px;" multiple>
+        </select>
+    </div>
+
+    <!--Submit button-->
+    <input type="submit" value="Submit" onclick="submitData(event)" class="submit">
+    <input type="button" value="Registered table" onclick="registeredData()" class="submit">
+
+    <!--Data table-->
+    <table id="dataTable">
+        <tr>
+            <td class="table_row">studentID</td>
+            <td class="table_row">Full name</td>
+            <td class="table_row">DoB</td>
+            <td class="table_row">Gender</td>
+        </tr>
+    </table>  
+
+    <!--Information board-->
+      <div id="infoBoard" class="board">
+        <div class="board_content">
+            <h1>Information</h1>
+            <p id="studentIDInfo">Student ID: </p>
+            <p id="nameInfo">Full name: </p>
+            <p id="birthdayInfo">Date of Birth: </p>
+            <p id="genderInfo">Gender: </p>
+            <p>Registered subject:</p>
+            <ul id="subjectList" style="list-style-type:circle;">
+                <!--Subject registered will be list-->
+            </ul>
+            <button class="close" type="button" onclick="closeBoard()">Close</button>
+        </div>
+      </div>
+</form>
+</body>
+</html>
