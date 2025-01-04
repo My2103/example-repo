@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+        }
+
+        .course-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        .course-details h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .course-details p {
+            margin: 5px 0;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            input, select, button, textarea {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Course Registration</h1>
+        <form action="/submit" method="POST">
+            <div class="form-group">
+                <label for="student-name">Student Name</label>
+                <input type="text" id="student-name" name="student_name" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="student-id">Student ID</label>
+                <input type="text" id="student-id" name="student_id" placeholder="Enter your student ID" required>
+            </div>
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" name="department" required>
+                    <option value="">Select your department</option>
+                    <option value="cs">Computer Science</option>
+                    <option value="eng">Engineering</option>
+                    <option value="bio">Biology</option>
+                    <option value="math">Mathematics</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Choose Courses</label>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="courses" value="math101" onclick="showCourseDetails('math101')"> Math 101
+                    </label>
+                    <label>
+                        <input type="checkbox" name="courses" value="cs101" onclick="showCourseDetails('cs101')"> Computer Science 101
+                    </label>
+                    <label>
+                        <input type="checkbox" name="courses" value="phy101" onclick="showCourseDetails('phy101')"> Physics 101
+                    </label>
+                    <label>
+                        <input type="checkbox" name="courses" value="eng101" onclick="showCourseDetails('eng101')"> English 101
+                    </label>
+                </div>
+            </div>
+            <div id="course-details-container" class="course-details" style="display: none;">
+                <h3>Course Details</h3>
+                <p id="course-code"></p>
+                <p id="course-name"></p>
+                <p id="prerequisites"></p>
+                <p id="credits"></p>
+                <p id="start-date"></p>
+                <p id="end-date"></p>
+                <p id="lecturer-info"></p>
+                <p id="class-time"></p>
+                <p id="classroom"></p>
+            </div>
+            <button type="submit">Register</button>
+            <div class="form-footer">
+                <p>Need help? Contact support at <a href="mailto:support@university.com">support@university.com</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const courseData = {
+            math101: {
+                code: 'MATH101',
+                name: 'Mathematics 101',
+                prerequisites: 'None',
+                credits: 3,
+                startDate: '2025-01-10',
+                endDate: '2025-05-15',
+                lecturer: { name: 'Dr. Alice Smith', email: 'alice.smith@university.com' },
+                classTime: 'Mon & Wed, 10:00 AM - 11:30 AM',
+                classroom: 'Room 201, Math Building'
+            },
+            cs101: {
+                code: 'CS101',
+                name: 'Computer Science 101',
+                prerequisites: 'None',
+                credits: 4,
+                startDate: '2025-01-12',
+                endDate: '2025-05-18',
+                lecturer: { name: 'Prof. John Doe', email: 'john.doe@university.com' },
+                classTime: 'Tue & Thu, 2:00 PM - 3:30 PM',
+                classroom: 'Room 101, CS Building'
+            },
+            phy101: {
+                code: 'PHY101',
+                name: 'Physics 101',
+                prerequisites: 'High School Physics',
+                credits: 3,
+                startDate: '2025-01-15',
+                endDate: '2025-05-20',
+                lecturer: { name: 'Dr. Emily Brown', email: 'emily.brown@university.com' },
+                classTime: 'Fri, 1:00 PM - 4:00 PM',
+                classroom: 'Room 303, Physics Building'
+            },
+            eng101: {
+                code: 'ENG101',
+                name: 'English 101',
+                prerequisites: 'None',
+                credits: 2,
+                startDate: '2025-01-11',
+                endDate: '2025-05-14',
+                lecturer: { name: 'Ms. Linda Taylor', email: 'linda.taylor@university.com' },
+                classTime: 'Mon & Wed, 8:00 AM - 9:30 AM',
+                classroom: 'Room 102, Arts Building'
+            }
+        };
+
+        function showCourseDetails(courseId) {
+            const details = courseData[courseId];
+            if (details) {
+                document.getElementById('course-details-container').style.display = 'block';
+                document.getElementById('course-code').textContent = `Course Code: ${details.code}`;
+                document.getElementById('course-name').textContent = `Course Name: ${details.name}`;
+                document.getElementById('prerequisites').textContent = `Prerequisites: ${details.prerequisites}`;
+                document.getElementById('credits').textContent = `Credits: ${details.credits}`;
+                document.getElementById('start-date').textContent = `Start Date: ${details.startDate}`;
+                document.getElementById('end-date').textContent = `End Date: ${details.endDate}`;
+                document.getElementById('lecturer-info').textContent = `Lecturer: ${details.lecturer.name} (${details.lecturer.email})`;
+                document.getElementById('class-time').textContent = `Class Time: ${details.classTime}`;
+                document.getElementById('classroom').textContent = `Classroom: ${details.classroom}`;
+            } else {
+                document.getElementById('course-details-container').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
