@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Course Registration form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #6495ED;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #6495ED;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #00008B;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+        }
+
+        .course-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        .course-details h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .course-details p {
+            margin: 5px 0;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Underline when selected 
+        .checkbox-group input:checked + label {
+            text-decoration: underline;
+        }*/
+
+        /* Ensure the course details container is separate and does not affect checkbox visibility 
+        #course-details-container {
+            display: none; /* Keep hidden initially 
+        }*/
+
+        .timetable {
+            margin-top: 30px;
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #f1f1f1;
+        }
+
+        .timetable th, .timetable td {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .timetable th {
+            background-color: #6495ED;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            input, select, button, textarea {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Course Registration</h1>
+        <form>
+            <!--Select name and ID of student-->
+            <div class="form-group">
+                <label for="student-name">Student Name</label>
+                <input type="text" id="student-name" name="student_name" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="student-id">Student ID</label>
+                <input type="text" id="student-id" name="student_id" placeholder="Enter your student ID" required>
+            </div>
+
+            <!--Student select the department-->
+            <div class="form-group">
+                <label for="major-select">Select Major</label>
+                <select id="major-select" class="form-control" onchange="filterCourses(this.value)">
+                    <option value="">Select your department</option>
+                    <option value="BA">Business Administration</option>
+                    <option value="HA">Hospitality Administration</option>
+                    <option value="IT">Information Technology</option>
+                </select>
+            </div>
+            
+            <!--Checkbox select courses-->
+            <div class="form-group">
+                <label>Choose Courses</label>
+                <div id="course-list-container" class="checkbox-group" style="display: none;"></div>
+            </div>
+
+            <!--Course details container-->
+            <div id="course-details-container" class="course-details" style="display: none;">
+                <h3>Course Details</h3>
+                <p id="course-code"></p>
+                <p id="course-name"></p>
+                <p id="prerequisites"></p>
+                <p id="credits"></p>
+                <p id="start-date"></p>
+                <p id="end-date"></p>
+                <p id="lecturer-info"></p>
+                <p id="class-time"></p>
+                <p id="classroom"></p>
+            </div>
+
+            <!--Submit button-->
+            <button type="submit" id="submit-button">Register</button>
+
+            <!--Contact-->
+            <div class="form-footer">
+                <p>Need help? Contact support at <a href="mailto:support@university.com">registrar@kuv.edu.vn</a></p>
+            </div>
+
+            <!--Timetable section-->
+            <div id="timetable-section" style="display: none;">
+                <h2>Your Semester Timetable</h2>
+                <table class="timetable">
+                    <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Class Time</th>
+                            <th>Classroom</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetable-body">
+                        <!-- Rows will be added dynamically -->
+                    </tbody>
+                </table>
+                <div id="calendar-section" style="margin-top: 30px;">
+                    <h2>Your Calendar View</h2>
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const courseList = {
+            BA: {
+                course1: "Accounting Principles I",
+                course2: "Financial Management",
+                course3: "Principles of Management",
+            },
+
+            HA: {
+                course1: "Selected Topics in Hospitality Management",
+            },
+
+            IT: {
+                course1: "Service/Support PC System I",
+                course2: "Managing/maintaining Server Operating System",
+                course3: "Data Structures & Algorithms",
+            }
+        };
+
+        const courseData = {
+            'Accounting Principles I': {
+                code: 'ACG1001',
+                name: 'Accounting Principles I',
+                prerequisites: 'All EAP',
+                credits: 3,
+                startDate: '2024-12-30',
+                endDate: '2025-03-01',
+                lecturer: { name: 'Vu Tuan Anh', email: 'anhvu1.hcm@kuv.edu.vn' },
+                classTime: 'Tue & Thu, 03:00 PM - 06:00 PM',
+                classroom: 'Room 1'
+            },
+            'Financial Management': {
+                code: 'FIN2001',
+                name: 'Financial Management',
+                prerequisites: 'ACG2011',
+                credits: 3,
+                startDate: '2024-12-30',
+                endDate: '2025-03-01',
+                lecturer: { name: 'Le Thi Hong Nga', email: 'ngale.hcm@kuv.edu.vn' },
+                classTime: 'Mon & Thu, 11:30 AM - 02:30 PM',
+                classroom: 'Room 1'
+            },
+            'Principles of Management': {
+                code: 'MAN1021',
+                name: 'Principles of Management',
+                prerequisites: 'All EAP',
+                credits: 3,
+                startDate: '2024-12-30',
+                endDate: '2025-03-01',
+                lecturer: { name: 'James Young', email: 'jamesyoung.hcm@kuv.edu.vn' },
+                classTime: 'Wed & Fri, 08:00 AM - 11:00 AM',
+                classroom: 'Room 6'
+            },
+            'Selected Topics in Hospitality Management': {
+                code: 'HFT2930',
+                name: 'Selected Topics in Hospitality Management',
+                prerequisites: 'All EAP',
+                credits: 3,
+                startDate: '2024-12-30',
+                endDate: '2025-03-01',
+                lecturer: { name: 'Dam Xuan Minh', email: 'minhdam.hn@kuv.edu.vn' },
+                classTime: 'Mon & Thu, 08:00 AM - 11:00 AM',
+                classroom: 'Room 6'
+            },
+            'Service/Support PC System I': {
+                code: 'CET1171C',
+                name: 'Service/Support PC System I',
+                prerequisites: 'All EAP',
+                credits: 3,
+                startDate: '2024-12-30',
+                endDate: '2025-03-01',
+                lecturer: { name: 'Tran Hoang Linh', email: 'linh.tran@kuv.edu.vn' },
+                classTime: 'Wed & Fri, 03:00 PM - 06:00 PM',
+                classroom: 'Lab'
+            },
+            'Managing/maintaining Server Operating System': {
+                code: 'CTS1328C',
+                name: 'Managing/maintaining Server Operating System',
+                prerequisites: 'All EAP',
+                credits: 3,
+                startDate: '2024-12-30',
+                endDate: '2025-03-01',
+                lecturer: { name: 'Vu Ngoc Thanh Sang', email: 'vungocthanhsang.hcm@kuv.edu.vn' },
+                classTime: 'Wed & Sat, 11:30 AM - 02:30 PM',
+                classroom: 'Lab'
+            },
+            'Data Structures & Algorithms': {
+                code: 'COP1411C',
+                name: 'Data Structures & Algorithms',
+                prerequisites: 'COP1800C',
+                credits: 3,
+                startDate: '2024-12-30',
+                endDate: '2025-03-01',
+                lecturer: { name: 'Le Nhi Lam Thuy', email: 'lenhilamthuy.hcm@kuv.edu.vn' },
+                classTime: 'Mon & Thu, 08:00 AM - 11:00 AM',
+                classroom: 'Lab'
+            },
+        };
+
+        function filterCourses(selectedMajor) {
+            const courseContainer = document.getElementById('course-list-container');
+            courseContainer.innerHTML = ''; // Xóa danh sách cũ
+            document.getElementById('course-details-container').style.display = 'none'; // Ẩn thông tin cũ
+
+            if (selectedMajor && courseList[selectedMajor]) {
+                courseContainer.style.display = 'block';
+
+                Object.entries(courseList[selectedMajor]).forEach(([key, courseName]) => {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'courses';
+                    checkbox.value = courseName;
+
+                    const label = document.createElement('label');
+                    label.textContent = courseName;
+                    
+                    const detailButton = document.createElement('button');
+                    detailButton.textContent = 'Detail';
+                    detailButton.style.marginLeft = '10px';
+                    detailButton.disabled = true; // Ban đầu vô hiệu hóa
+            
+                    const div = document.createElement('div');
+                    div.classList.add('checkbox-item');
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+            
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            label.style.textDecoration = 'underline';
+                            showCourseDetails(this.value); // Truyền tên môn học
+                        } else {
+                            label.style.textDecoration = 'none';
+                            document.getElementById('course-details-container').style.display = 'none';
+                        }
+                    });
+                    
+                    courseContainer.appendChild(div);
+                });
+            } else {
+                courseContainer.style.display = 'none';
+            }
+        }
+
+        function showCourseDetails(courseName) {
+            const details = courseData[courseName];
+            /*const checkboxes = document.querySelectorAll('input[name="courses"]:checked');*/
+
+            if (details) {
+                document.getElementById('course-details-container').style.display = 'block';
+                document.getElementById('course-code').textContent = `Course Code: ${details.code}`;
+                document.getElementById('course-name').textContent = `Course Name: ${details.name}`;
+                document.getElementById('prerequisites').textContent = `Prerequisites: ${details.prerequisites}`;
+                document.getElementById('credits').textContent = `Credits: ${details.credits}`;
+                document.getElementById('start-date').textContent = `Start Date: ${details.startDate}`;
+                document.getElementById('end-date').textContent = `End Date: ${details.endDate}`;
+                document.getElementById('lecturer-info').textContent = `Lecturer: ${details.lecturer.name} (${details.lecturer.email})`;
+                document.getElementById('class-time').textContent = `Class Time: ${details.classTime}`;
+                document.getElementById('classroom').textContent = `Classroom: ${details.classroom}`;
+            } else {
+                document.getElementById('course-details-container').style.display = 'none';
+            }
+        }
+
+        /*Submit button*/
+        document.getElementById('submit-button').addEventListener('click', () => {
+            event.preventDefault(); // Prevent form submission and page reload
+
+            // Validate required fields
+            const studentName = document.getElementById('student-name').value;
+            const studentId = document.getElementById('student-id').value;
+            const department = document.getElementById('department').value;
+
+            if (!studentName || !studentId || !department) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Collect selected courses
+            const selectedCourses = Array.from(document.querySelectorAll('input[name="courses"]:checked'))
+                .map(input => input.value);
+
+            if (selectedCourses.length > 0) {
+                const timetableBody = document.getElementById('timetable-body');
+                timetableBody.innerHTML = ''; // Clear previous rows
+
+                selectedCourses.forEach(courseId => {
+                    const course = courseData[courseId];
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${course.code}</td>
+                        <td>${course.name}</td>
+                        <td>${course.classTime}</td>
+                        <td>${course.classroom}</td>
+                    `;
+                    timetableBody.appendChild(row);
+                });
+
+                document.getElementById('timetable-section').style.display = 'block';
+            } else {
+                alert('Please select at least one course.');
+            }
+        });
+
+        /*Display calendar*/
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const hours = ['8:00 AM', '9:00 AM', '11:30 AM', '11:45 AM', '13:00 PM', '14:45 PM', '15:00 PM'];
+
+        /*Function create table in the format of a calendar (using grid template)*/
+        function createCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = ''; // Clear any existing calendar
+
+            // Create the calendar grid
+            const table = document.createElement('table');
+            table.style.borderCollapse = 'collapse';
+            table.style.width = '100%';
+            table.style.tableLayout = 'fixed'; // Fix the layout of the table
+            table.style.margin = '10px 0';
+
+            // Header row for days
+            const headerRow = document.createElement('tr');
+            headerRow.appendChild(createCell('Time', true));
+            daysOfWeek.forEach(day => headerRow.appendChild(createCell(day, true)));
+            table.appendChild(headerRow);
+
+            // Create time slots
+            hours.forEach(hour => {
+                const row = document.createElement('tr');
+                row.appendChild(createCell(hour, true));
+
+                // Create a cell for each day
+                daysOfWeek.forEach(() => {
+                    row.appendChild(createCell(''));
+                });
+                table.appendChild(row);
+            });
+
+            calendar.appendChild(table);
+        }
+
+        /*Function create cells for table: The program will check the value, 
+        if there is a header, it wil be style in the form of a header */
+        function createCell(content, isHeader = false) {
+            const cell = isHeader ? document.createElement('th') : document.createElement('td');
+            cell.textContent = content;
+            cell.style.border = '1px solid #ccc';
+            cell.style.textAlign = 'center';
+            cell.style.padding = '6px'; // Giảm padding để tiết kiệm không gian
+            cell.style.fontSize = '12px'; // Giảm kích thước chữ để hiển thị nhiều thông tin hơn
+
+
+            /*Check is this value a header (Monday, Tuesday...) or not*/
+            if (isHeader) {
+                cell.style.backgroundColor = '#6495ED';
+                cell.style.color = 'white';
+                cell.style.fontWeight = 'bold'; // Làm đậm chữ cho header
+            } else {
+                // Style cells with a default fixed height and width
+                cell.style.height = '40px'; // Adjust height if necessary
+            }
+            return cell;
+        }
+        
+        /*This function mark course in the timetable by mark day and time of that course*/
+        function highlightSchedule(courseId) {
+            const course = courseData[courseId]; //A constant have the value course ID (Ex: CS101)
+            /*if (!course) {
+                console.warn('Course data not found for', courseId);
+                return; 
+            }*/
+
+            const calendar = document.getElementById('calendar'); //Find the id "calendar" to operate with timetable calendar
+
+            if (course) {
+                // Parse class time (e.g., "Mon & Wed, 10:00 AM - 11:30 AM")
+                const daysAndTime = course.classTime.split(',').map(part => part.trim()); // Tách chuỗi lần đầu
+
+                // Tách ngày và thời gian
+                const days = daysAndTime[0]; // Lấy ngày từ phần đầu tiên
+                const time = daysAndTime[1]; // Lấy thời gian từ phần thứ hai
+
+                const daysArr = days.split('&').map(day => day.trim()); // Tách các ngày
+                const timeParts = time.split('-').map(part => part.trim()); // Tách giờ bắt đầu và kết thúc
+
+                const startTime = timeParts[0]; // Lấy giờ bắt đầu
+
+                // Highlight the corresponding cells in the calendar
+                daysArr.forEach(day => {
+                    const dayIndex = daysOfWeek.indexOf(day);
+                    const timeIndex = hours.findIndex(h => startTime === h);
+
+                    if (dayIndex !== -1 && timeIndex !== -1) {
+                        const cell = calendar.querySelector(
+                            `tr:nth-child(${timeIndex + 2}) td:nth-child(${dayIndex + 2})`
+                    );
+                        if (cell) {
+                            cell.style.backgroundColor = '#FFD700';
+                            cell.style.color = '#333';
+                            cell.textContent = course.name;
+                        } else {
+                            console.warn('Cell not found for', day, startTime);
+                        }
+                    }
+                });
+            }
+        }
+
+        document.getElementById('submit-button').addEventListener('click', (event) => {
+            event.preventDefault();
+            
+            /*Select all of the checkboxs have name="course" which user selected. 
+            Convert the list of the checkboxs into an array.*/
+            const selectedCourses = Array.from(document.querySelectorAll('input[name="courses"]:checked'))
+                .map(input => input.value); // Take value from the checkboxs. Each checkbox have values such as courseID,...
+            // selectedCourses is an array have courseID from the checkboxes user selected
+
+            if (selectedCourses.length > 0) {
+                createCalendar(); // Reset the calendar before add courses
+                selectedCourses.forEach(courseId => highlightSchedule(courseId)); // Loop through selectedCourses (courseId) which selected by user and call function highlightSchedule to mark the courses in the calendar
+            } else {
+                alert('Please select at least one course.');
+            }
+        });
+
+        // Initialize the calendar
+        createCalendar();
+    </script>
+</body>
+</html>
