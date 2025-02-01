@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Subject Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #6495ED;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #6495ED;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="radio"] {
+            margin-left: 10px;
+        }
+        button {
+            background-color: #6495ED;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #417ab4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #6495ED;
+            color: #fff;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Subject Management</h1>
+
+        <form id="subjectForm">
+            <label for="subjectName">Subject Name:</label>
+            <input type="text" id="subjectName" name="subjectName" required>
+            <br>
+
+            <label>Action:</label>
+            <input type="radio" id="add" name="action" value="Add" required>
+            <label for="add">Add</label>
+            <input type="radio" id="drop" name="action" value="Drop">
+            <label for="drop">Drop</label>
+            <br><br>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="result">
+            <h2>Actions Performed</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Subject Name</th>
+                    </tr>
+                </thead>
+                <tbody id="actionsTableBody">
+                    <tr>
+                        <td>Add</td>
+                        <td>Math 101</td>
+                    </tr>
+                    <tr>
+                        <td>Drop</td>
+                        <td>History 202</td>
+                    </tr>
+                    <tr>
+                        <td>Add</td>
+                        <td>Physics 303</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('subjectForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const subjectName = document.getElementById('subjectName').value.trim();
+            const action = document.querySelector('input[name="action"]:checked').value;
+
+            if (subjectName) {
+                const tableBody = document.getElementById('actionsTableBody');
+                const newRow = document.createElement('tr');
+
+                const actionCell = document.createElement('td');
+                actionCell.textContent = action;
+
+                const subjectCell = document.createElement('td');
+                subjectCell.textContent = subjectName;
+
+                newRow.appendChild(actionCell);
+                newRow.appendChild(subjectCell);
+
+                tableBody.appendChild(newRow);
+
+                // Clear the form for new input
+                document.getElementById('subjectForm').reset();
+            } else {
+                alert('Please enter a subject name!');
+            }
+        });
+    </script>
+</body>
+</html>
